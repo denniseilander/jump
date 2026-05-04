@@ -1,10 +1,16 @@
-# ⚡ jump 
+<div align="center">
+
+# ⚡ jump
+
+**Native SSH launcher for the terminal**
 
 ![GitHub release](https://img.shields.io/github/v/release/denniseilander/jump)
 ![Go version](https://img.shields.io/github/go-mod/go-version/denniseilander/jump)
 ![License](https://img.shields.io/github/license/denniseilander/jump)
 
 ![jump TUI demo](assets/demo.png)
+
+</div>
 
 **jump** is a fast SSH launcher for the terminal. It reads your `~/.ssh/config`, lets you search and connect to hosts by alias, hostname, user, or metadata — with a fuzzy TUI picker, a real-time connect spinner, and a managed config layer that keeps your hosts organised.
 
