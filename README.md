@@ -5,6 +5,8 @@
 **Native SSH launcher for the terminal**
 
 ![GitHub release](https://img.shields.io/github/v/release/denniseilander/jump)
+![Downloads](https://img.shields.io/github/downloads/denniseilander/jump/total)
+![CI](https://img.shields.io/github/actions/workflow/status/denniseilander/jump/ci.yml?label=CI)
 ![Go version](https://img.shields.io/github/go-mod/go-version/denniseilander/jump)
 ![License](https://img.shields.io/github/license/denniseilander/jump)
 
