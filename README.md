@@ -51,21 +51,52 @@ Download the binary for your platform from the [Releases](https://github.com/den
 
 ---
 
-## Quick start
+## Getting started
+
+### 1. Initialise
+
+Run this once after installing:
 
 ```bash
-# First-time setup — creates ~/.ssh/config.d/jump.conf and adds the Include line
 jump init
-
-# Add your first host
-jump add
-
-# Open the TUI picker
-jump
-
-# Search and connect
-jump myapp prod
 ```
+
+This creates `~/.ssh/config.d/jump.conf` and adds a single `Include` line to your existing `~/.ssh/config`. Your current config is untouched.
+
+### 2. Add your first host
+
+```bash
+jump add
+```
+
+jump will prompt you for the details:
+
+```
+Add a new SSH host to jump's managed config.
+
+App/project code (e.g. myapp, api): myapp
+Project name (optional, e.g. My Project): My App
+Environment [prod/acc/dev/test]: prod
+Service/role (optional, e.g. gateway, web, db):
+  → alias: "myapp-prod"
+
+HostName: prod-01.example.com
+User []: deploy
+Port [22]:
+IdentityFile []: ~/.ssh/id_ed25519
+Description [MY APP connection [prod]]:
+```
+
+The host is written to `~/.ssh/config.d/jump.conf` and is immediately available.
+
+### 3. Connect
+
+```bash
+jump myapp prod      # search and connect directly
+jump                 # open TUI picker and search interactively
+```
+
+That's it. Run `jump doctor` if anything looks off.
 
 ---
 
