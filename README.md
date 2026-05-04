@@ -34,7 +34,7 @@
 ## Requirements
 
 - macOS, Linux, or Windows (amd64 / arm64)
-- `ssh` binary on `$PATH`
+- `ssh` binary on `$PATH` (OpenSSH — PuTTY is not supported)
 - `~/.ssh/config` readable
 - Go 1.21+ — only when building from source
 
@@ -48,15 +48,14 @@
 curl -fsSL https://raw.githubusercontent.com/denniseilander/jump/main/install.sh | sh
 ```
 
-Auto-detects OS and architecture, installs to `/usr/local/bin`.
-
 **Windows (PowerShell):**
 
 ```powershell
 irm https://raw.githubusercontent.com/denniseilander/jump/main/install.ps1 | iex
 ```
 
-Installs to `%USERPROFILE%\bin` and adds it to your user `PATH` automatically. Restart your terminal after installing.
+<details>
+<summary>Other installation options</summary>
 
 **With Go:**
 
@@ -78,19 +77,21 @@ make install
 
 Download the binary for your platform from the [Releases](https://github.com/denniseilander/jump/releases) page and place it on your `$PATH`.
 
+</details>
+
 ---
 
 ## Getting started
 
 ### 1. Initialise
 
-Run this once after installing:
+Run once after installing:
 
 ```bash
 jump init
 ```
 
-This creates `~/.ssh/config.d/jump.conf` and adds a single `Include` line to your existing `~/.ssh/config`. Your current config is untouched.
+Creates `~/.ssh/config.d/jump.conf` and adds an `Include` line to your existing `~/.ssh/config`. Your current config is untouched.
 
 ### 2. Add your first host
 
@@ -98,7 +99,7 @@ This creates `~/.ssh/config.d/jump.conf` and adds a single `Include` line to you
 jump add
 ```
 
-jump will prompt you for the details:
+jump prompts for the details:
 
 ```
 Add a new SSH host to jump's managed config.
@@ -116,40 +117,30 @@ IdentityFile []: ~/.ssh/id_ed25519
 Description [MY APP connection [prod]]:
 ```
 
-The host is written to `~/.ssh/config.d/jump.conf` and is immediately available.
-
 ### 3. Connect
 
 ```bash
 jump myapp prod      # search and connect directly
-jump                 # open TUI picker and search interactively
+jump                 # open TUI picker
 ```
 
-That's it. Run `jump doctor` if anything looks off.
+Run `jump doctor` if anything looks off.
 
 ---
 
 ## Usage
 
-```
-jump [--print] [--json] [query...]
-```
-
-Searches all SSH hosts and connects to the best match. If multiple hosts match at similar scores, the TUI picker opens automatically. A single strong match connects immediately without prompting.
-
 ```bash
-jump                          # open TUI picker (all hosts)
-jump myapp                    # search and connect
-jump myapp production         # multi-term search
-jump gateway acc              # connect to acceptance gateway
-jump -                        # reconnect to last used host
-jump --print myapp prod       # print ssh command, do not connect
-jump --json myapp             # output match as JSON
+jump [query...]             # search and connect (opens TUI on multiple matches)
+jump                        # open TUI picker (all hosts)
+jump myapp production       # multi-term search
+jump -                      # reconnect to last used host
+jump --print myapp prod     # print ssh command, do not connect
+jump --json myapp           # output match as JSON
 ```
 
----
-
-## Commands
+<details>
+<summary>All commands</summary>
 
 ### Search & inspect
 
@@ -193,9 +184,7 @@ jump --json myapp             # output match as JSON
 | `jump doctor` | Validate jump and SSH setup |
 | `jump open-config [--managed\|--ssh\|--metadata\|--history\|--config]` | Open a config file in your editor |
 
----
-
-## Flags
+### Flags
 
 | Flag | Description |
 |---|---|
@@ -207,11 +196,13 @@ jump --json myapp             # output match as JSON
 | `--pick` | Always open the TUI picker, even on a strong match |
 | `--no-tui` | Disable TUI; use classic numbered CLI picker |
 
+</details>
+
 ---
 
 ## TUI
 
-Open the picker with `jump` or `jump <query>`. Type to filter in real time.
+Open with `jump` or `jump <query>`. Type to filter in real time.
 
 | Key | Action |
 |---|---|
@@ -226,7 +217,7 @@ Open the picker with `jump` or `jump <query>`. Type to filter in real time.
 
 ## Metadata
 
-Attach optional metadata to any host by adding a `# jump:` comment on the line immediately before the `Host` block:
+Attach optional metadata to any `Host` block via an inline comment:
 
 ```sshconfig
 # jump: app=myapp client="My Project" env=prod tags=web,production description="Production web server"
@@ -236,8 +227,6 @@ Host myapp-web-prod
   Port 22
 ```
 
-Supported keys:
-
 | Key | Description |
 |---|---|
 | `app` | Application or project code |
@@ -246,7 +235,7 @@ Supported keys:
 | `tags` | Comma-separated list of tags |
 | `description` | Free-text description |
 
-All metadata fields are searchable. `jump myapp prod` matches on both the alias and metadata fields. Environment synonyms are resolved automatically — searching `production` also matches `prod`, `prd`, and `productie`.
+All metadata fields are searchable. Environment synonyms are resolved automatically — `production` matches `prod`, `prd`, and `productie`.
 
 ---
 
@@ -260,22 +249,7 @@ All metadata fields are searchable. `jump myapp prod` matches on both the alias 
   jump.conf                ← managed by jump
 ```
 
-Hosts added via `jump add` or `jump bulk-add` are written to `jump.conf`, leaving your existing `~/.ssh/config` untouched. Backups of `jump.conf` are created automatically before every write to `~/.config/jump/backups/`.
-
----
-
-## Configuration
-
-Run `jump config` to set defaults used when adding new hosts:
-
-| Setting | Description |
-|---|---|
-| Default IdentityFile | Default SSH key path |
-| Default User | Default SSH username |
-| Default Port | Default port (omitted if 22) |
-| Connect timeout | Seconds before connection attempt times out |
-
-Config is stored at `~/.config/jump/config.json`.
+Hosts added via `jump add` or `jump bulk-add` are written to `jump.conf`, leaving your existing `~/.ssh/config` untouched. Before every write, jump automatically backs up `jump.conf` to `~/.config/jump/backups/`.
 
 ---
 
