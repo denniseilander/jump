@@ -279,6 +279,18 @@ Config is stored at `~/.config/jump/config.json`.
 
 ---
 
+## Security & privacy
+
+- **Reads, never modifies** your existing `~/.ssh/config` — jump only appends an `Include` line on `jump init`, nothing else
+- **No credentials stored** — jump never reads, stores, or transmits passwords, private keys, or passphrases
+- **No network calls** — jump makes no outbound connections except the SSH session you explicitly initiate
+- **Local data only** — history and metadata are stored in `~/.config/jump/` on your machine, never synced or sent anywhere
+- **SSH handles auth** — all authentication is delegated entirely to your existing SSH client and agent
+- **Managed config is plain text** — `~/.ssh/config.d/jump.conf` is a standard SSH config file, human-readable and auditable at any time
+- **Automatic backups** — before every write, jump backs up `jump.conf` to `~/.config/jump/backups/`
+
+---
+
 ## License
 
 [MIT](LICENSE)
