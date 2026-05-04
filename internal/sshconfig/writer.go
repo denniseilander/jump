@@ -282,9 +282,6 @@ func UpdateHostMetaByApp(appCode string, updates map[string]string) (int, error)
 		if h.Meta["app"] != appCode {
 			continue
 		}
-		if h.Meta == nil {
-			h.Meta = map[string]string{}
-		}
 		for k, v := range updates {
 			h.Meta[k] = v
 		}

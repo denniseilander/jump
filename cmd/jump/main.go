@@ -805,7 +805,6 @@ func mustCopy(query string, limit int) {
 	output.CopySuccess(cmd)
 }
 
-
 func mustAliases(args []string, jsonOut bool) {
 	hosts, err := sshconfig.ParseDefault()
 	if err != nil {
@@ -917,7 +916,10 @@ func mustHistory(limit int, jsonOut bool) {
 	}
 
 	results := make([]search.Result, 0, len(entries))
-	hosts, _ := sshconfig.ParseDefault()
+	hosts, err := sshconfig.ParseDefault()
+	if err != nil {
+		fatal(err.Error())
+	}
 	hostByAlias := map[string]sshconfig.Host{}
 	for _, h := range hosts {
 		hostByAlias[h.Alias] = h

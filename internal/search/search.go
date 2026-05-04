@@ -331,9 +331,3 @@ func scoreTokenDetailed(h sshconfig.Host, token string) (int, string) {
 	return 0, ""
 }
 
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}

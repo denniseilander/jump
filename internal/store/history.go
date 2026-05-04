@@ -39,35 +39,55 @@ func Load() History {
 	return h
 }
 
-func RenameHistory(oldAlias, newAlias string) error {
-	h := Load()
-	entry, ok := h[oldAlias]
-	if !ok {
-		return nil
+// withLock acquires an exclusive O_EXCL lock file before calling fn.
+// Cross-platform: O_EXCL create is atomic on POSIX and NTFS.
+// Falls through without lock if a stale lock lingers past 500ms.
+func withLock(path string, fn func() error) error {
+	lockPath := path + ".lock"
+	deadline := time.Now().Add(500 * time.Millisecond)
+	for {
+		f, err := os.OpenFile(lockPath, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0600)
+		if err == nil {
+			defer os.Remove(lockPath)
+			f.Close()
+			return fn()
+		}
+		if !os.IsExist(err) {
+			// unexpected error — proceed without lock
+			return fn()
+		}
+		if time.Now().After(deadline) {
+			// stale lock — remove and proceed
+			os.Remove(lockPath)
+			return fn()
+		}
+		time.Sleep(10 * time.Millisecond)
 	}
-	entry.Alias = newAlias
-	h[newAlias] = entry
-	delete(h, oldAlias)
+}
 
+func RenameHistory(oldAlias, newAlias string) error {
 	path, err := Path()
 	if err != nil {
 		return err
 	}
-	data, err := json.MarshalIndent(h, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(path, data, 0600)
+	return withLock(path, func() error {
+		h := Load()
+		entry, ok := h[oldAlias]
+		if !ok {
+			return nil
+		}
+		entry.Alias = newAlias
+		h[newAlias] = entry
+		delete(h, oldAlias)
+		data, err := json.MarshalIndent(h, "", "  ")
+		if err != nil {
+			return err
+		}
+		return os.WriteFile(path, data, 0600)
+	})
 }
 
 func Record(alias string) error {
-	h := Load()
-	entry := h[alias]
-	entry.Alias = alias
-	entry.LastUsedAt = time.Now()
-	entry.ConnectCount++
-	h[alias] = entry
-
 	path, err := Path()
 	if err != nil {
 		return err
@@ -75,9 +95,17 @@ func Record(alias string) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0700); err != nil {
 		return err
 	}
-	data, err := json.MarshalIndent(h, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(path, data, 0600)
+	return withLock(path, func() error {
+		h := Load()
+		entry := h[alias]
+		entry.Alias = alias
+		entry.LastUsedAt = time.Now()
+		entry.ConnectCount++
+		h[alias] = entry
+		data, err := json.MarshalIndent(h, "", "  ")
+		if err != nil {
+			return err
+		}
+		return os.WriteFile(path, data, 0600)
+	})
 }
