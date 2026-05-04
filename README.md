@@ -19,6 +19,15 @@
 
 ---
 
+## Requirements
+
+- macOS, Linux, or Windows (amd64 / arm64)
+- `ssh` binary on `$PATH`
+- `~/.ssh/config` readable
+- Go 1.21+ — only when building from source
+
+---
+
 ## Installation
 
 **One-liner (macOS / Linux):**
@@ -247,14 +256,6 @@ Run `jump config` to set defaults used when adding new hosts:
 | Connect timeout | Seconds before connection attempt times out |
 
 Config is stored at `~/.config/jump/config.json`.
-
----
-
-## Requirements
-
-- `ssh` binary available on `$PATH`
-- `~/.ssh/config` readable
-- Go 1.21+ (only for building from source)
 
 ---
 
