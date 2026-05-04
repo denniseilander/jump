@@ -245,8 +245,7 @@ All metadata fields are searchable. Environment synonyms are resolved automatica
 
 ```
 ~/.ssh/config              ← your existing config (Include line added at top)
-~/.ssh/config.d/
-  jump.conf                ← managed by jump
+~/.ssh/config.d/jump.conf  ← managed by jump
 ```
 
 Hosts added via `jump add` or `jump bulk-add` are written to `jump.conf`, leaving your existing `~/.ssh/config` untouched. Before every write, jump automatically backs up `jump.conf` to `~/.config/jump/backups/`.
