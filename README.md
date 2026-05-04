@@ -30,13 +30,21 @@
 
 ## Installation
 
-**One-liner (macOS / Linux):**
+**macOS / Linux:**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/denniseilander/jump/main/install.sh | sh
 ```
 
-The script auto-detects your OS and architecture, downloads the correct binary from the latest GitHub release, and installs it to `/usr/local/bin`.
+Auto-detects OS and architecture, installs to `/usr/local/bin`.
+
+**Windows (PowerShell):**
+
+```powershell
+irm https://raw.githubusercontent.com/denniseilander/jump/main/install.ps1 | iex
+```
+
+Installs to `%USERPROFILE%\bin` and adds it to your user `PATH` automatically. Restart your terminal after installing.
 
 **With Go:**
 
